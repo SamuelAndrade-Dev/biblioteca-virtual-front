@@ -1,13 +1,14 @@
 import "./App.css";
 import { Routes, Route } from "react-router";
 import Navbar from "./components/Navbar/Navbar";
+import Footer from "./components/Footer/Footer"
 import Home from "./pages/Home/Home";
 import Cadastro from "./pages/Cadastro/Cadastro";
 import Listagem from "./pages/Listagem/Listagem";
 
 function App() {
   return (
-    <div className="app-shell">
+    <section className="app-shell">
       <Navbar />
       <main className="app-main">
         <Routes>
@@ -16,7 +17,8 @@ function App() {
           <Route path="/listagem" element={<Listagem />} />
         </Routes>
       </main>
-    </div>
+      <Footer />
+    </section>
   )
 }
 

@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router';
 import './Navbar.css'
 
 function Navbar() {
@@ -39,4 +39,4 @@ function Navbar() {
   )
 }
 
-export default Navbar
+export default Navbar;
