@@ -7,9 +7,6 @@ import { LivroProvider } from './contexts/LivroContext'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
     <LivroProvider>
       <BrowserRouter>
         <App />
