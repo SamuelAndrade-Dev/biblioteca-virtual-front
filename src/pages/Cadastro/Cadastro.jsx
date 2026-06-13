@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useLivro } from "../../contexts/LivroContext";
 import { useNavigate } from "react-router";
+import "./Cadastro.css";
 
 function Cadastro() {
     // estados controlados para cada campo

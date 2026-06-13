@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLivro } from "../../contexts/LivroContext";
 import { buscarLivros } from "../../services/openLibrary";
+import "./Listagem.css";
 
 function Listagem() {
     const { livros } = useLivro();
