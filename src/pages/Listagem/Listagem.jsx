@@ -7,29 +7,33 @@ function Listagem() {
     const [tituloBusca, setTituloBusca] = useState("");
     const [resultados, setResultados] = useState([]);
     const [carregando, setCarregando] = useState(false);
-    const [erro, setErro] = useState("");
+    const [error, setError] = useState("");
+    const [pesquisaRealizada, setPesquisaRealizada] = useState(false);
 
     const handlePesquisar = async (e) => {
         e.preventDefault();
+        setError("");
+        setPesquisaRealizada(false);
 
         const tituloNormalizado = tituloBusca.trim();
 
         if (!tituloNormalizado) {
             setResultados([]);
-            setErro("Informe um título para pesquisar.");
+            setError("Digite um título para pesquisar.");
             return;
         }
 
         try {
             setCarregando(true);
-            setErro("");
 
             const livrosEncontrados = await buscarLivros(tituloNormalizado);
             setResultados(livrosEncontrados);
+            setPesquisaRealizada(true);
         } catch (error) {
             console.error("Erro ao buscar livros na Open Library:", error);
             setResultados([]);
-            setErro("Não foi possível buscar livros na Open Library.");
+            setError("Não foi possível carregar os livros. Tente novamente.");
+            setPesquisaRealizada(true);
         } finally {
             setCarregando(false);
         }
@@ -53,11 +57,17 @@ function Listagem() {
                         placeholder="Digite o título do livro"
                     />
                     <button type="submit" disabled={carregando}>
-                        {carregando ? "Pesquisando..." : "Pesquisar"}
+                        Pesquisar
                     </button>
                 </form>
 
-                {erro && <p role="alert">{erro}</p>}
+                {carregando && <p>Carregando livros...</p>}
+
+                {error && <p role="alert">{error}</p>}
+
+                {pesquisaRealizada && !carregando && !error && resultados.length > 0 && (
+                    <p>{resultados.length} livros encontrados.</p>
+                )}
 
                 {resultados.length > 0 && (
                     <div className="table-responsive">
@@ -82,8 +92,8 @@ function Listagem() {
                     </div>
                 )}
 
-                {!carregando && !erro && tituloBusca.trim() && resultados.length === 0 && (
-                    <p>Nenhum resultado encontrado.</p>
+                {pesquisaRealizada && !carregando && !error && resultados.length === 0 && (
+                    <p>Nenhum livro encontrado.</p>
                 )}
             </section>
 
@@ -92,28 +102,28 @@ function Listagem() {
             ) : (
                 <section className="listagem-cadastrados" aria-labelledby="livros-cadastrados-title">
                     <h2 id="livros-cadastrados-title">Livros Cadastrados</h2>
-                <div className="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Título</th>
-                                <th>Autor</th>
-                                <th>Categoria</th>
-                                <th>Quantidade</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {livros.map((livro) => (
-                                <tr key={livro.id}>
-                                    <td>{livro.titulo}</td>
-                                    <td>{livro.autor}</td>
-                                    <td>{livro.categoria}</td>
-                                    <td>{livro.quantidade}</td>
+                    <div className="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Título</th>
+                                    <th>Autor</th>
+                                    <th>Categoria</th>
+                                    <th>Quantidade</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                                {livros.map((livro) => (
+                                    <tr key={livro.id}>
+                                        <td>{livro.titulo}</td>
+                                        <td>{livro.autor}</td>
+                                        <td>{livro.categoria}</td>
+                                        <td>{livro.quantidade}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </section>
             )}
         </div>
