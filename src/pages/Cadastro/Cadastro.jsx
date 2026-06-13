@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useLivro } from "../../contexts/LivroContext";
+import { useNavigate } from "react-router";
 
 function Cadastro() {
     // estados controlados para cada campo
@@ -42,6 +44,9 @@ function Cadastro() {
         return novoErros;
     };
 
+    const { adicionarLivro } = useLivro();
+    const navigate = useNavigate();
+
     // envia o formulário sem recarregar a página e loga os dados
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -60,14 +65,24 @@ function Cadastro() {
             quantidade: Number(quantidade),
         };
 
-        console.log("Livro cadastrado:", novoLivro);
+                console.log("Livro cadastrado:", novoLivro);
 
-        // limpa o formulário após submissão (boa experiência de usuário)
-        setTitulo("");
-        setAutor("");
-        setCategoria("");
-        setQuantidade("");
-        setErros({ titulo: "", autor: "", categoria: "", quantidade: "" });
+                        // adiciona ao contexto
+                        try {
+                            adicionarLivro(novoLivro);
+                        } catch (err) {
+                            console.error("Erro ao adicionar livro:", err);
+                        }
+
+                        // limpa o formulário após submissão (boa experiência de usuário)
+                        setTitulo("");
+                        setAutor("");
+                        setCategoria("");
+                        setQuantidade("");
+                        setErros({ titulo: "", autor: "", categoria: "", quantidade: "" });
+
+                        // redireciona para a página de listagem
+                        navigate("/listagem");
     };
 
     // handlers que atualizam valor e limpam o erro do campo correspondente

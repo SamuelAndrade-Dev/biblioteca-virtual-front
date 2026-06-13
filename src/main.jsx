@@ -3,11 +3,14 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router'
 import './index.css'
 import App from './App.jsx'
+import { LivroProvider } from './contexts/LivroContext'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <LivroProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </LivroProvider>
   </StrictMode>,
 )
