@@ -1,53 +1,50 @@
-import { useState } from "react";
-import { useLivro } from "../../contexts/LivroContext";
-import { buscarLivros } from "../../services/openLibrary";
+import React from "react";
+import { useLivros } from "../../context/LivrosContext";
 import "./Listagem.css";
 
 function Listagem() {
-    const { livros } = useLivro();
-    const [tituloBusca, setTituloBusca] = useState("");
-    const [resultados, setResultados] = useState([]);
-    const [carregando, setCarregando] = useState(false);
-    const [error, setError] = useState("");
-    const [pesquisaRealizada, setPesquisaRealizada] = useState(false);
+    // Acessa o contexto de livros
+    const contexto = useLivros();
+    const livrosDoBanco = contexto.livros;
 
-    const handlePesquisar = async (e) => {
+    const [tituloBusca, setTituloBusca] = React.useState("");
+    const [livrosFiltrados, setLivrosFiltrados] = React.useState([]);
+    const [pesquisaRealizada, setPesquisaRealizada] = React.useState(false);
+
+    // Função para filtrar os livros localmente pelo título
+    const handlePesquisarLocal = (e) => {
         e.preventDefault();
-        setError("");
-        setPesquisaRealizada(false);
+        const termo = tituloBusca.trim().toLowerCase();
 
-        const tituloNormalizado = tituloBusca.trim();
-
-        if (!tituloNormalizado) {
-            setResultados([]);
-            setError("Digite um título para pesquisar.");
+        if (!termo) {
+            setLivrosFiltrados([]);
+            setPesquisaRealizada(false);
             return;
         }
 
-        try {
-            setCarregando(true);
+        // Filtra os livros que vieram do db.json
+        const resultado = livrosDoBanco.filter(function (livro) {
+            return livro.titulo.toLowerCase().includes(termo);
+        });
 
-            const livrosEncontrados = await buscarLivros(tituloNormalizado);
-            setResultados(livrosEncontrados);
-            setPesquisaRealizada(true);
-        } catch (error) {
-            console.error("Erro ao buscar livros na Open Library:", error);
-            setResultados([]);
-            setError("Não foi possível carregar os livros. Tente novamente.");
-            setPesquisaRealizada(true);
-        } finally {
-            setCarregando(false);
-        }
+        setLivrosFiltrados(resultado);
+        setPesquisaRealizada(true);
     };
 
+    // Determina se exibe a lista completa ou a lista filtrada pela pesquisa
+    const listaParaExibir = pesquisaRealizada ? livrosFiltrados : livrosDoBanco;
+
     return (
-        <div className="listagem-page">
-            <h1>Listagem de Livros</h1>
+        <section className="listagem-page">
+            <header>
+                <h1>Listagem de Livros</h1>
+            </header>
 
+            {/* SEÇÃO DE FILTRO LOCAL */}
             <section className="busca-livros" aria-labelledby="busca-livros-title">
-                <h2 id="busca-livros-title">Pesquisa de Livros</h2>
+                <h2 id="busca-livros-title">Pesquisar no Acervo</h2>
 
-                <form onSubmit={handlePesquisar} noValidate>
+                <form onSubmit={handlePesquisarLocal} noValidate>
                     <label htmlFor="titulo-busca">Buscar por título</label>
                     <input
                         id="titulo-busca"
@@ -57,77 +54,62 @@ function Listagem() {
                         onChange={(e) => setTituloBusca(e.target.value)}
                         placeholder="Digite o título do livro"
                     />
-                    <button type="submit" disabled={carregando}>
-                        Pesquisar
+                    <button type="submit">
+                        Filtrar
                     </button>
+
+                    {pesquisaRealizada && (
+                        <button
+                            type="button"
+                            onClick={function () {
+                                setTituloBusca("");
+                                setPesquisaRealizada(false);
+                            }}
+                            style={{ marginLeft: "0.5rem" }}
+                        >
+                            Limpar Filtro
+                        </button>
+                    )}
                 </form>
-
-                {carregando && <p>Carregando livros...</p>}
-
-                {error && <p role="alert">{error}</p>}
-
-                {pesquisaRealizada && !carregando && !error && resultados.length > 0 && (
-                    <p>{resultados.length} livros encontrados.</p>
-                )}
-
-                {resultados.length > 0 && (
-                    <div className="table-responsive">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Título</th>
-                                    <th>Autor</th>
-                                    <th>Ano de publicação</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {resultados.map((livro) => (
-                                    <tr key={livro.openLibraryKey ?? `${livro.titulo}-${livro.autor}` }>
-                                        <td>{livro.titulo}</td>
-                                        <td>{livro.autor}</td>
-                                        <td>{livro.anoPublicacao ?? "Ano não informado"}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-
-                {pesquisaRealizada && !carregando && !error && resultados.length === 0 && (
-                    <p>Nenhum livro encontrado.</p>
-                )}
             </section>
 
-            {(!livros || livros.length === 0) ? (
-                <p>Nenhum livro cadastrado.</p>
+            {/* SEÇÃO DA TABELA DOS CADASTRADOS */}
+            {(!listaParaExibir || listaParaExibir.length === 0) ? (
+                <section className="listagem-cadastrados">
+                    <h2>Resultado do Acervo</h2>
+                    <p>{pesquisaRealizada ? "Nenhum livro corresponde à sua busca." : "Nenhum livro cadastrado no sistema."}</p>
+                </section>
             ) : (
                 <section className="listagem-cadastrados" aria-labelledby="livros-cadastrados-title">
-                    <h2 id="livros-cadastrados-title">Livros Cadastrados</h2>
-                    <div className="table-responsive">
+                    <h2 id="livros-cadastrados-title">
+                        {pesquisaRealizada ? "Resultados Encontrados" : "Todos os Livros Cadastrados"}
+                    </h2>
+
+                    <section className="table-responsive">
                         <table>
                             <thead>
                                 <tr>
                                     <th>Título</th>
                                     <th>Autor</th>
-                                    <th>Categoria</th>
-                                    <th>Quantidade</th>
+                                    <th>Gênero / Categoria</th>
+                                    <th>Ano / Qtd</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {livros.map((livro) => (
-                                    <tr key={livro.id}>
+                                {listaParaExibir.map((livro) => (
+                                    <tr key={livro.id ?? `${livro.titulo}-${livro.autor}`}>
                                         <td>{livro.titulo}</td>
                                         <td>{livro.autor}</td>
-                                        <td>{livro.categoria}</td>
-                                        <td>{livro.quantidade}</td>
+                                        <td>{livro.genero}</td>
+                                        <td>{livro.ano}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
-                    </div>
+                    </section>
                 </section>
             )}
-        </div>
+        </section>
     );
 }
 

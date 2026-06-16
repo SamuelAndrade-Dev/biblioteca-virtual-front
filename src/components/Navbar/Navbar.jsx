@@ -4,16 +4,16 @@ import './Navbar.css'
 function Navbar() {
   return (
     <header className="navbar">
-      <div className="navbar__brand">
+      <aside className="navbar-brand">
         <span className="navbar__logo">Biblioteca Virtual</span>
-      </div>
+      </aside>
 
-      <nav className="navbar__nav" aria-label="Principal">
+      <nav className="navbar-nav" aria-label="Principal">
         <NavLink
           to="/"
           end
           className={({ isActive }) =>
-            isActive ? 'navbar__link navbar__link--active' : 'navbar__link'
+            isActive ? 'navbar-link navbar-link--active' : 'navbar-link'
           }
         >
           Home
@@ -21,7 +21,7 @@ function Navbar() {
         <NavLink
           to="/cadastro"
           className={({ isActive }) =>
-            isActive ? 'navbar__link navbar__link--active' : 'navbar__link'
+            isActive ? 'navbar-link navbar-link--active' : 'navbar-link'
           }
         >
           Cadastro
@@ -29,7 +29,7 @@ function Navbar() {
         <NavLink
           to="/listagem"
           className={({ isActive }) =>
-            isActive ? 'navbar__link navbar__link--active' : 'navbar__link'
+            isActive ? 'navbar-link navbar-link--active' : 'navbar-link'
           }
         >
           Listagem

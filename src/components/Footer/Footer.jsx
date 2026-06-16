@@ -7,7 +7,7 @@ function Footer() {
     return (
         <footer className="footer" aria-label="Rodapé da Biblioteca Virtual">
 
-            <div className="footer__grid">
+            <section className="footer__grid">
 
                 <section className="footer__brand" aria-labelledby="footer-marca">
                     <h2 id="footer-marca" className="footer__brand-nome">
@@ -79,16 +79,16 @@ function Footer() {
                     </ul>
                 </nav>
 
-            </div>
+            </section>
 
-            <div className="footer__bottom">
+            <section className="footer__bottom">
                 <small className="footer__copy">
                     &copy; {anoAtual} Biblioteca Virtual. Todos os direitos reservados.
                 </small>
                 <small className="footer__tech">
                     Desenvolvido com React + Vite
                 </small>
-            </div>
+            </section>
 
         </footer>
     );

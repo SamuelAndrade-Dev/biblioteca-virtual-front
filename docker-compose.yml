@@ -9,3 +9,11 @@ services:
       - "5173:5173"
     tty: true
     stdin_open: true
+
+  api:
+    image: clue/json-server
+    container_name: biblioteca-virtual-api
+    ports:
+      - "3000:80"
+    volumes:
+      - ./db.json:/data/db.json

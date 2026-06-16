@@ -1,24 +1,24 @@
-import { useState } from "react";
-import { useLivro } from "../../contexts/LivroContext";
+import React from "react";
+import { useLivros } from "../../context/LivrosContext";
 import { useNavigate } from "react-router";
 import "./Cadastro.css";
 
 function Cadastro() {
-    // estados controlados para cada campo
-    const [titulo, setTitulo] = useState("");
-    const [autor, setAutor] = useState("");
-    const [categoria, setCategoria] = useState("");
-    const [quantidade, setQuantidade] = useState("");
+    const [titulo, setTitulo] = React.useState("");
+    const [autor, setAutor] = React.useState("");
+    const [categoria, setCategoria] = React.useState("");
+    const [quantidade, setQuantidade] = React.useState("");
 
-    // estado para armazenar mensagens de erro por campo
-    const [erros, setErros] = useState({
+    const [erros, setErros] = React.useState({
         titulo: "",
         autor: "",
         categoria: "",
         quantidade: "",
     });
 
-    // valida todos os campos e retorna um objeto com mensagens de erro
+    const contexto = useLivros();
+    const navigate = useNavigate();
+
     const validar = () => {
         const novoErros = { titulo: "", autor: "", categoria: "", quantidade: "" };
 
@@ -34,7 +34,6 @@ function Cadastro() {
             novoErros.categoria = "A categoria é obrigatória.";
         }
 
-        // quantidade deve ser informada e maior que 0
         const qtdNum = quantidade === "" ? NaN : Number(quantidade);
         if (quantidade === "" || Number.isNaN(qtdNum)) {
             novoErros.quantidade = "A quantidade é obrigatória.";
@@ -45,66 +44,38 @@ function Cadastro() {
         return novoErros;
     };
 
-    const { adicionarLivro } = useLivro();
-    const navigate = useNavigate();
-
-    // envia o formulário sem recarregar a página e loga os dados
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const novoErros = validar();
         setErros(novoErros);
 
-        // impede envio se houver qualquer mensagem de erro
         const possuiErros = Object.values(novoErros).some((msg) => msg !== "");
         if (possuiErros) return;
 
+        // Monta o objeto com as chaves exatas que a API e a Listagem esperam
         const novoLivro = {
             titulo: titulo.trim(),
             autor: autor.trim(),
-            categoria: categoria.trim(),
-            quantidade: Number(quantidade),
+            genero: categoria.trim(),
+            ano: quantidade.trim()
         };
 
-        console.log("Livro cadastrado:", novoLivro);
-
-        // adiciona ao contexto
         try {
-            adicionarLivro(novoLivro);
+            // Envia para a função do contexto que faz o fetch POST para o db.json
+            await contexto.adicionarLivro(novoLivro);
+
+            // Limpa os campos do formulário após o sucesso
+            setTitulo("");
+            setAutor("");
+            setCategoria("");
+            setQuantidade("");
+
+            // Redireciona o usuário para a tela de listagem onde o dado vai carregar
+            navigate("/listagem");
         } catch (err) {
-            console.error("Erro ao adicionar livro:", err);
+            console.error("Erro ao cadastrar o livro no fluxo do formulário:", err);
         }
-
-        // limpa o formulário após submissão (boa experiência de usuário)
-        setTitulo("");
-        setAutor("");
-        setCategoria("");
-        setQuantidade("");
-        setErros({ titulo: "", autor: "", categoria: "", quantidade: "" });
-
-        // redireciona para a página de listagem
-        navigate("/listagem");
-    };
-
-    // handlers que atualizam valor e limpam o erro do campo correspondente
-    const handleTituloChange = (e) => {
-        setTitulo(e.target.value);
-        if (erros.titulo) setErros((prev) => ({ ...prev, titulo: "" }));
-    };
-
-    const handleAutorChange = (e) => {
-        setAutor(e.target.value);
-        if (erros.autor) setErros((prev) => ({ ...prev, autor: "" }));
-    };
-
-    const handleCategoriaChange = (e) => {
-        setCategoria(e.target.value);
-        if (erros.categoria) setErros((prev) => ({ ...prev, categoria: "" }));
-    };
-
-    const handleQuantidadeChange = (e) => {
-        setQuantidade(e.target.value);
-        if (erros.quantidade) setErros((prev) => ({ ...prev, quantidade: "" }));
     };
 
     return (
@@ -117,82 +88,51 @@ function Cadastro() {
                         <label htmlFor="titulo">Título</label>
                         <input
                             id="titulo"
-                            name="titulo"
                             type="text"
-                            required
-                            minLength={3}
                             value={titulo}
-                            onChange={handleTituloChange}
-                            aria-invalid={erros.titulo ? "true" : "false"}
-                            aria-describedby={erros.titulo ? "erro-titulo" : undefined}
+                            onChange={(e) => setTitulo(e.target.value)}
+                            placeholder="Ex: O Senhor dos Anéis"
                         />
-                        {erros.titulo && (
-                            <output id="erro-titulo" className="error-message" role="alert">
-                                {erros.titulo}
-                            </output>
-                        )}
+                        {erros.titulo && <output className="error-message">{erros.titulo}</output>}
                     </fieldset>
 
                     <fieldset className="form-group">
                         <label htmlFor="autor">Autor</label>
                         <input
                             id="autor"
-                            name="autor"
                             type="text"
-                            required
-                            minLength={3}
                             value={autor}
-                            onChange={handleAutorChange}
-                            aria-invalid={erros.autor ? "true" : "false"}
-                            aria-describedby={erros.autor ? "erro-autor" : undefined}
+                            onChange={(e) => setAutor(e.target.value)}
+                            placeholder="Ex: J.R.R. Tolkien"
                         />
-                        {erros.autor && (
-                            <output id="erro-autor" className="error-message" role="alert">
-                                {erros.autor}
-                            </output>
-                        )}
+                        {erros.autor && <output className="error-message">{erros.autor}</output>}
                     </fieldset>
 
                     <fieldset className="form-group">
-                        <label htmlFor="categoria">Categoria</label>
+                        <label htmlFor="categoria">Categoria / Gênero</label>
                         <input
                             id="categoria"
-                            name="categoria"
                             type="text"
-                            required
                             value={categoria}
-                            onChange={handleCategoriaChange}
-                            aria-invalid={erros.categoria ? "true" : "false"}
-                            aria-describedby={erros.categoria ? "erro-categoria" : undefined}
+                            onChange={(e) => setCategoria(e.target.value)}
+                            placeholder="Ex: Fantasia"
                         />
-                        {erros.categoria && (
-                            <output id="erro-categoria" className="error-message" role="alert">
-                                {erros.categoria}
-                            </output>
-                        )}
+                        {erros.categoria && <output className="error-message">{erros.categoria}</output>}
                     </fieldset>
 
                     <fieldset className="form-group">
-                        <label htmlFor="quantidade">Quantidade</label>
+                        <label htmlFor="quantidade">Quantidade / Ano</label>
                         <input
                             id="quantidade"
-                            name="quantidade"
                             type="number"
-                            min="1"
-                            required
                             value={quantidade}
-                            onChange={handleQuantidadeChange}
-                            aria-invalid={erros.quantidade ? "true" : "false"}
-                            aria-describedby={erros.quantidade ? "erro-quantidade" : undefined}
+                            onChange={(e) => setQuantidade(e.target.value)}
+                            placeholder="Ex: 1954"
                         />
-                        {erros.quantidade && (
-                            <output id="erro-quantidade" className="error-message" role="alert">
-                                {erros.quantidade}
-                            </output>
-                        )}
+                        {erros.quantidade && <output className="error-message">{erros.quantidade}</output>}
                     </fieldset>
 
-                    <button type="submit">Cadastrar</button>
+                    <button type="submit">Salvar no Acervo</button>
                 </form>
             </section>
         </main>

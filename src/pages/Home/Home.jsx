@@ -27,27 +27,27 @@ function Home() {
                     listagem com uma navegação simples e direta.
                 </p>
 
-                <div className="home-actions" aria-label="Ações principais">
+                <nav className="home-actions" aria-label="Ações principais">
                     <Link className="home-button" to="/cadastro">
                         Cadastro de Livros
                     </Link>
                     <Link className="home-button home-button-secondary" to="/listagem">
                         Listagem de Livros
                     </Link>
-                </div>
+                </nav>
             </section>
 
             <section className="home-cards-section" aria-labelledby="home-features-title">
                 <h2 id="home-features-title">Funcionalidades principais</h2>
 
-                <div className="home-cards">
+                <section className="home-cards">
                     {cards.map((card) => (
                         <article className="home-card" key={card.title}>
                             <h3>{card.title}</h3>
                             <p>{card.description}</p>
                         </article>
                     ))}
-                </div>
+                </section>
             </section>
         </main>
     );
