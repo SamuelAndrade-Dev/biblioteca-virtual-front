@@ -7,7 +7,7 @@ function Footer() {
     return (
         <footer className="footer" aria-label="Rodapé da Biblioteca Virtual">
 
-            <section className="footer__grid">
+            <section className="footer-flex">
 
                 <section className="footer__brand" aria-labelledby="footer-marca">
                     <h2 id="footer-marca" className="footer__brand-nome">
@@ -39,46 +39,7 @@ function Footer() {
                         </li>
                     </ul>
                 </nav>
-
-                <nav aria-labelledby="footer-nav-generos">
-                    <h2 id="footer-nav-generos" className="footer__nav-titulo">Gêneros</h2>
-                    <ul className="footer__lista" role="list">
-                        <li>
-                            <Link to="/listagem?genero=ficcao" className="footer__link">Ficção</Link>
-                        </li>
-                        <li>
-                            <Link to="/listagem?genero=nao-ficcao" className="footer__link">Não ficção</Link>
-                        </li>
-                        <li>
-                            <Link to="/listagem?genero=romance" className="footer__link">Romance</Link>
-                        </li>
-                        <li>
-                            <Link to="/listagem?genero=biografia" className="footer__link">Biografia</Link>
-                        </li>
-                        <li>
-                            <Link to="/listagem?genero=classicos" className="footer__link">Clássicos</Link>
-                        </li>
-                    </ul>
-                </nav>
-
-                <nav aria-labelledby="footer-nav-info">
-                    <h2 id="footer-nav-info" className="footer__nav-titulo">Informações</h2>
-                    <ul className="footer__lista" role="list">
-                        <li>
-                            <Link to="/sobre" className="footer__link">Sobre a biblioteca</Link>
-                        </li>
-                        <li>
-                            <Link to="/privacidade" className="footer__link">Privacidade</Link>
-                        </li>
-                        <li>
-                            <Link to="/termos" className="footer__link">Termos de uso</Link>
-                        </li>
-                        <li>
-                            <Link to="/contato" className="footer__link">Fale conosco</Link>
-                        </li>
-                    </ul>
-                </nav>
-
+                
             </section>
 
             <section className="footer__bottom">
