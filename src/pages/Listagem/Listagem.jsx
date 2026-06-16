@@ -87,24 +87,34 @@ function Listagem() {
 
                     <section className="table-responsive">
                         <table>
-                            <thead>
-                                <tr>
-                                    <th>Título</th>
-                                    <th>Autor</th>
-                                    <th>Gênero / Categoria</th>
-                                    <th>Ano / Qtd</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {listaParaExibir.map((livro) => (
-                                    <tr key={livro.id ?? `${livro.titulo}-${livro.autor}`}>
-                                        <td>{livro.titulo}</td>
-                                        <td>{livro.autor}</td>
-                                        <td>{livro.genero}</td>
-                                        <td>{livro.ano}</td>
+                                <thead>
+                                    <tr>
+                                        <th>Título</th>
+                                        <th>Autor</th>
+                                        <th>Gênero / Categoria</th>
+                                        <th>Ano / Qtd</th>
+                                        <th>Ações</th>
                                     </tr>
-                                ))}
-                            </tbody>
+                                </thead>
+                                <tbody>
+                                    {listaParaExibir.map((livro) => (
+                                        <tr key={livro.id ?? `${livro.titulo}-${livro.autor}`}>
+                                            <td>{livro.titulo}</td>
+                                            <td>{livro.autor}</td>
+                                            <td>{livro.genero}</td>
+                                            <td>{livro.ano}</td>
+                                            <td>
+                                                <button
+                                                    className="btn-remover"
+                                                    onClick={() => contexto.removerLivro(livro.id)}
+                                                    aria-label={`Remover ${livro.titulo}`}
+                                                >
+                                                    Remover
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
                         </table>
                     </section>
                 </section>

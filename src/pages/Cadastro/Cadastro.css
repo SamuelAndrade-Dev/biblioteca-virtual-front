@@ -3,6 +3,7 @@
   --color-border: #0c514b;
   --color-text: #03221f;
   --color-input: #f8fafc;
+  --color-button: #153d3a;
 }
 
 .cadastro-page {
@@ -65,7 +66,7 @@
   padding: 0 1.4rem;
   border: none;
   border-radius: 14px;
-  background: var(--color-cadastro);
+  background: var(--color-button);
   color: var(--color-cadastro);
   font-weight: 700;
   cursor: pointer;
@@ -75,8 +76,7 @@
 .cadastro-page button:hover,
 .cadastro-page button:focus-visible {
   transform: translateY(-1px);
-  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.22);
-  background: var(--color-input);
+  box-shadow: 0 14px 28px var(--color-border) ;
 }
 
 @media (min-width: 1025px) {

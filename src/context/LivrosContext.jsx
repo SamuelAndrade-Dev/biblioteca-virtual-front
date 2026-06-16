@@ -43,14 +43,33 @@ export function LivrosProvider(props) {
       }
     } catch (erro) {
       console.error("Erro ao salvar o livro no banco de dados:", erro);
-      throw erro; // Repassa o erro para o catch do formulário se necessário
+      throw erro; 
     }
   }
 
-  // Monta o objeto de valor que será compartilhado
+  async function removerLivro(id) {
+    try {
+      const resposta = await fetch(`${URL_API}/${id}`, {
+        method: "DELETE",
+      });
+      if (resposta.ok) {
+        setLivros(function (listaAnterior) {
+          return listaAnterior.filter(function (livro) {
+            return livro.id !== id;
+          });
+        });
+      }
+    } catch (erro) {
+      console.error("Erro ao remover o livro:", erro);
+      throw erro;
+    }
+  }
+
+  // Atualizar o valorCompartilhado
   const valorCompartilhado = {
     livros: livros,
-    adicionarLivro: adicionarLivro
+    adicionarLivro: adicionarLivro,
+    removerLivro: removerLivro,   // 👈 adicionar aqui
   };
 
   return (

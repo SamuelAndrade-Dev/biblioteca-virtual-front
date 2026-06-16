@@ -88,7 +88,25 @@
   background: #1e293b;
 }
 
-/* ── Seção da tabela ── */
+.btn-remover {
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #ffffff62;
+  color: #000000;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.btn-remover:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
 .listagem-cadastrados {
   background: #fff;
   border: 1px solid #f1f5f9;
@@ -114,7 +132,6 @@
   margin: 0;
 }
 
-/* ── Tabela ── */
 .table-responsive {
   overflow-x: auto;
 }
@@ -151,7 +168,6 @@
   background: #f8fafc;
 }
 
-/* ── Responsivo ── */
 @media (max-width: 767px) {
   .listagem-page {
     margin: 1rem 0;
