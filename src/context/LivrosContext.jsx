@@ -1,6 +1,6 @@
 import React from "react";
 
-// Criação do contexto de livros
+
 const LivrosContext = React.createContext();
 
 export function LivrosProvider(props) {
@@ -8,7 +8,7 @@ export function LivrosProvider(props) {
 
   const URL_API = "http://localhost:3000/livros";
 
-  // Busca os livros do db.json assim que o componente carrega
+  
   React.useEffect(function () {
     async function buscarDados() {
       try {
@@ -22,7 +22,7 @@ export function LivrosProvider(props) {
     buscarDados();
   }, []);
 
-  // Função assíncrona que seu componente Cadastro já está chamando
+  
   async function adicionarLivro(novoLivro) {
     try {
       const resposta = await fetch(URL_API, {
@@ -36,7 +36,7 @@ export function LivrosProvider(props) {
       if (resposta.ok) {
         const livroSalvo = await resposta.json();
 
-        // Atualiza o estado local adicionando o novo livro com o ID gerado pelo banco
+        
         setLivros(function (listaAnterior) {
           return listaAnterior.concat(livroSalvo);
         });
@@ -65,11 +65,42 @@ export function LivrosProvider(props) {
     }
   }
 
-  // Atualizar o valorCompartilhado
+  
+  async function editarLivro(id, livroAtualizado) {
+    try {
+      const resposta = await fetch(`${URL_API}/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(livroAtualizado)
+      });
+
+      if (resposta.ok) {
+        const livroSalvo = await resposta.json();
+
+        
+        setLivros(function (listaAnterior) {
+          return listaAnterior.map(function (livro) {
+            return livro.id === id ? livroSalvo : livro;
+          });
+        });
+      } else {
+        console.error('Falha ao editar o livro, status:', resposta.status);
+        throw new Error('Falha ao editar o livro');
+      }
+    } catch (erro) {
+      console.error("Erro ao editar o livro:", erro);
+      throw erro;
+    }
+  }
+
+  
   const valorCompartilhado = {
     livros: livros,
     adicionarLivro: adicionarLivro,
-    removerLivro: removerLivro,   // 👈 adicionar aqui
+    removerLivro: removerLivro,  
+    editarLivro: editarLivro,
   };
 
   return (
@@ -79,7 +110,7 @@ export function LivrosProvider(props) {
   );
 }
 
-// Hook customizado para facilitar o acesso nas páginas
+
 export function useLivros() {
   return React.useContext(LivrosContext);
 }

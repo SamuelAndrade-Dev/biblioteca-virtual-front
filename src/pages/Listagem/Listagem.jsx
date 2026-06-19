@@ -3,15 +3,26 @@ import { useLivros } from "../../context/LivrosContext";
 import "./Listagem.css";
 
 function Listagem() {
-    // Acessa o contexto de livros
+    
     const contexto = useLivros();
     const livrosDoBanco = contexto.livros;
+
+    
+    const [idEditando, setIdEditando] = React.useState(null);
+
+    
+    const [formEdicao, setFormEdicao] = React.useState({
+        titulo: "",
+        autor: "",
+        genero: "",
+        ano: ""
+    });
 
     const [tituloBusca, setTituloBusca] = React.useState("");
     const [livrosFiltrados, setLivrosFiltrados] = React.useState([]);
     const [pesquisaRealizada, setPesquisaRealizada] = React.useState(false);
 
-    // Função para filtrar os livros localmente pelo título
+    
     const handlePesquisarLocal = (e) => {
         e.preventDefault();
         const termo = tituloBusca.trim().toLowerCase();
@@ -22,7 +33,7 @@ function Listagem() {
             return;
         }
 
-        // Filtra os livros que vieram do db.json
+        
         const resultado = livrosDoBanco.filter(function (livro) {
             return livro.titulo.toLowerCase().includes(termo);
         });
@@ -31,7 +42,7 @@ function Listagem() {
         setPesquisaRealizada(true);
     };
 
-    // Determina se exibe a lista completa ou a lista filtrada pela pesquisa
+    
     const listaParaExibir = pesquisaRealizada ? livrosFiltrados : livrosDoBanco;
 
     return (
@@ -99,19 +110,102 @@ function Listagem() {
                                 <tbody>
                                     {listaParaExibir.map((livro) => (
                                         <tr key={livro.id ?? `${livro.titulo}-${livro.autor}`}>
-                                            <td>{livro.titulo}</td>
-                                            <td>{livro.autor}</td>
-                                            <td>{livro.genero}</td>
-                                            <td>{livro.ano}</td>
-                                            <td>
-                                                <button
-                                                    className="btn-remover"
-                                                    onClick={() => contexto.removerLivro(livro.id)}
-                                                    aria-label={`Remover ${livro.titulo}`}
-                                                >
-                                                    Remover
-                                                </button>
-                                            </td>
+                                            {idEditando === livro.id ? (
+                                                <>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            value={formEdicao.titulo}
+                                                            onChange={(e) => setFormEdicao(function(prev){ return {...prev, titulo: e.target.value}; })}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            value={formEdicao.autor}
+                                                            onChange={(e) => setFormEdicao(function(prev){ return {...prev, autor: e.target.value}; })}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            value={formEdicao.genero}
+                                                            onChange={(e) => setFormEdicao(function(prev){ return {...prev, genero: e.target.value}; })}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            value={formEdicao.ano}
+                                                            onChange={(e) => setFormEdicao(function(prev){ return {...prev, ano: e.target.value}; })}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            onClick={async () => {
+                                                                
+                                                                const livroEditado = {
+                                                                    id: livro.id,
+                                                                    titulo: formEdicao.titulo,
+                                                                    autor: formEdicao.autor,
+                                                                    genero: formEdicao.genero,
+                                                                    ano: formEdicao.ano
+                                                                };
+                                                                try {
+                                                                    await contexto.editarLivro(livro.id, livroEditado);
+                                                                    setIdEditando(null);
+                                                                } catch (erro) {
+                                                                    
+                                                                    console.error('Erro ao salvar edição:', erro);
+                                                                }
+                                                            }}
+                                                        >
+                                                            Salvar
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                
+                                                                setIdEditando(null);
+                                                                setFormEdicao({ titulo: "", autor: "", genero: "", ano: "" });
+                                                            }}
+                                                            style={{ marginLeft: "0.5rem" }}
+                                                        >
+                                                            Cancelar
+                                                        </button>
+                                                    </td>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <td>{livro.titulo}</td>
+                                                    <td>{livro.autor}</td>
+                                                    <td>{livro.genero}</td>
+                                                    <td>{livro.ano}</td>
+                                                    <td>
+                                                        <button
+                                                            className="btn-remover"
+                                                            onClick={() => contexto.removerLivro(livro.id)}
+                                                            aria-label={`Remover ${livro.titulo}`}
+                                                        >
+                                                            Remover
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                
+                                                                setIdEditando(livro.id);
+                                                                setFormEdicao({
+                                                                    titulo: livro.titulo ?? "",
+                                                                    autor: livro.autor ?? "",
+                                                                    genero: livro.genero ?? "",
+                                                                    ano: livro.ano ?? ""
+                                                                });
+                                                            }}
+                                                            style={{ marginLeft: "0.5rem" }}
+                                                        >
+                                                            Editar
+                                                        </button>
+                                                    </td>
+                                                </>
+                                            )}
                                         </tr>
                                     ))}
                                 </tbody>
