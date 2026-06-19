@@ -103,7 +103,7 @@ function Listagem() {
                                         <th>Título</th>
                                         <th>Autor</th>
                                         <th>Gênero / Categoria</th>
-                                        <th>Ano / Qtd</th>
+                                        <th>Ano</th>
                                         <th>Ações</th>
                                     </tr>
                                 </thead>
