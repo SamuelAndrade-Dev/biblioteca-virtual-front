@@ -53,7 +53,7 @@ function Cadastro() {
         const possuiErros = Object.values(novoErros).some((msg) => msg !== "");
         if (possuiErros) return;
 
-        // Monta o objeto com as chaves exatas que a API e a Listagem esperam
+        
         const novoLivro = {
             titulo: titulo.trim(),
             autor: autor.trim(),
@@ -62,16 +62,16 @@ function Cadastro() {
         };
 
         try {
-            // Envia para a função do contexto que faz o fetch POST para o db.json
+            
             await contexto.adicionarLivro(novoLivro);
 
-            // Limpa os campos do formulário após o sucesso
+            
             setTitulo("");
             setAutor("");
             setCategoria("");
             setQuantidade("");
 
-            // Redireciona o usuário para a tela de listagem onde o dado vai carregar
+            
             navigate("/listagem");
         } catch (err) {
             console.error("Erro ao cadastrar o livro no fluxo do formulário:", err);
@@ -121,7 +121,7 @@ function Cadastro() {
                     </fieldset>
 
                     <fieldset className="form-group">
-                        <label htmlFor="quantidade">Quantidade / Ano</label>
+                        <label htmlFor="quantidade">Ano</label>
                         <input
                             id="quantidade"
                             type="number"
