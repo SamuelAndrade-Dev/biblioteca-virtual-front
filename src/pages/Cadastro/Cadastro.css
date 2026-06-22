@@ -1,0 +1,115 @@
+:root {
+  --color-cadastro: #ffffff;
+  --color-border: #0c514b;
+  --color-text: #03221f;
+  --color-input: #f8fafc;
+  --color-button: #153d3a;
+}
+
+.cadastro-page {
+  width: min(720px, 100%);
+  margin: 2rem auto;
+  padding: 2rem 2.2rem;
+  background: var(--color-cadastro);
+  border: 1px solid var(--color-border);
+  border-radius: 28px;
+  box-shadow: 0 24px 60px var(--color-border);
+}
+
+.cadastro-page h1 {
+  margin-bottom: 1.5rem;
+  font-size: clamp(1.9rem, 2.4vw, 2.6rem);
+  letter-spacing: -0.03em;
+}
+
+.cadastro-page form {
+  display: grid;
+  gap: 1rem;
+}
+
+.form-group {
+  display: grid;
+  padding: 2rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: var(--color-text);
+  padding-bottom: 0.6rem;
+}
+
+.form-group input {
+  width: 100%;
+  min-height: 3.2rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-input);
+  color: var(--color-text);
+  transition: border-color 180ms ease, background-color 180ms ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--color-border);
+  background: var(--color-cadastro);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
+}
+
+.error-message {
+  color: #b91c1c;
+  font-size: 0.92rem;
+}
+
+.cadastro-page button {
+  align-self: flex-start;
+  min-height: 3.2rem;
+  padding: 0 1.4rem;
+  border: none;
+  border-radius: 14px;
+  background: var(--color-button);
+  color: var(--color-cadastro);
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+.cadastro-page button:hover,
+.cadastro-page button:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px var(--color-border) ;
+}
+
+@media (min-width: 1025px) {
+  .cadastro-page {
+    width: min(720px, 100%);
+    margin: 2rem auto;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .cadastro-page {
+    width: min(680px, 100%);
+    margin: 1.75rem auto;
+    padding: 1.85rem 1.75rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .cadastro-page {
+    margin: 1rem;
+    padding: 1.25rem;
+    border-radius: 20px;
+  }
+
+  .cadastro-page form {
+    gap: 0.9rem;
+  }
+
+  .form-group input {
+    padding: 0.9rem 0.95rem;
+  }
+
+  .cadastro-page button {
+    width: 100%;
+  }
+}
